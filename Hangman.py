@@ -1,31 +1,44 @@
 import random
-words = {
-    "Keeps the doctor away": "APPLE",
-    "Monkey's favorite": "BANANA",
-    "Something to drink": "GRAPE",
+moves = {
+    "Holy church has this": "CROSS",
+    "Something chipmunks eat":"NUT",
+    "Even a pirate has this": "HOOK",
+    "Best move to make by a boxer": "UPPERCUT",
 }
 lives = 6
-random_hint = random.choice(list(words.keys()))
-random_word = words[random_hint]
-blank = ["_"] * len(random_word)
-clean_blank = " ".join(blank)
+hint, word = random.choice(list(moves.items()))
+blank = ['_'] * len(word)
+clean = ''.join(blank)
+
+user = input('Before anything else input your name. ').title()
+print(f'Welcome to the hangman game {user}!\n'
+      f'Hey {user}! Ready to test your vocabulary?\n'
+      f'In Hangman, you have to guess the secret word\n'
+      f'one letter at a time before you run out of attempts and the drawing is complete.\n'
+)
 
 while lives > 0 and '_' in blank:
     print(
-        f'The secret hint is "{random_hint}",\n'
-        f'{clean_blank}\n'
-        f'Your current life remaining: {lives}'
+        f'Hint for secret word: {hint},\n'
+        f'Letters in hidden word: {' '.join(blank)}\n'
+        f'Your remaining lives: {lives}\n'
     )
-    found = False
 
-    user_input = input("Enter your guess here: ").upper().strip()
-    if len(user_input) != 1:
-        print("That's not a valid guess. It should be one character only")
-    for i, letter in enumerate(random_word):
-        if user_input == letter:
-            blank[i] = letter
-            found = True
-    clean_blank = " ".join(blank)
-    if not found:
+    guess = input("Guess a letter inside this hidden word: ").upper().strip()
+
+    if lives == 2:
+        print(f'Warning! One life left.\n')
+    elif len(guess) != 1 or not guess.isalpha():
+        print('Invalid guess! One letter only')
+        continue
+
+    found_match = False
+    for i in range(len(word)):
+        if guess == word[i]:
+            blank[i] = guess
+            found_match = True
+
+    if not found_match:
         lives -= 1
-print(f'Done the correct word is: {random_word}')
+    elif '_' not in blank:
+        print("Congratulations! You've fully filled the letters")

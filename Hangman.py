@@ -7,38 +7,39 @@ moves = {
 }
 lives = 6
 hint, word = random.choice(list(moves.items()))
-blank = ['_'] * len(word)
-clean = ''.join(blank)
-
-user = input('Before anything else input your name. ').title()
-print(f'Welcome to the hangman game {user}!\n'
-      f'Hey {user}! Ready to test your vocabulary?\n'
-      f'In Hangman, you have to guess the secret word\n'
-      f'one letter at a time before you run out of attempts and the drawing is complete.\n'
-)
+blank = ["_"] * len(word)
+clean = "_".join(blank)
+guessed = set()
 
 while lives > 0 and '_' in blank:
-    print(
-        f'Hint for secret word: {hint},\n'
-        f'Letters in hidden word: {' '.join(blank)}\n'
-        f'Your remaining lives: {lives}\n'
+    print(f'Current life: {lives}\n'
+          f'The hint for the word {hint}\n'
+          f'Word contains {" ".join(blank)}\n'
     )
+    if lives == 1:
+        print('You have 1 life remaining!')
 
-    guess = input("Guess a letter inside this hidden word: ").upper().strip()
-
-    if lives == 2:
-        print(f'Warning! One life left.\n')
-    elif len(guess) != 1 or not guess.isalpha():
-        print('Invalid guess! One letter only')
-        continue
+    guess = input('Input your guess letter one only: ').strip().upper()
 
     found_match = False
+    if len(guess) != 1 or not guess.isalpha():
+        print(f'Enter a valid char!\n')
+        continue
+
+
     for i in range(len(word)):
         if guess == word[i]:
-            blank[i] = guess
             found_match = True
-
+            blank[i] = guess
     if not found_match:
         lives -= 1
-    elif '_' not in blank:
-        print("Congratulations! You've fully filled the letters")
+
+    if guess in guessed:
+        print(f"That's guessed already\n")
+
+    guessed.add(guess)
+
+if not '_' in blank:
+    print('Congratulations!')
+else:
+    print('You lost :<')
